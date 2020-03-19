@@ -23,7 +23,7 @@ opsys, arch, compiler = sys.argv[1], sys.argv[2], sys.argv[3]
 
 dd = yaml.safe_load(open("master.yaml"))
 
-of = open('new-spack.yaml','w')
+of = open('spack.yaml','w')
 nfdd = {"spack":{}}
 spack = nfdd["spack"]
 
