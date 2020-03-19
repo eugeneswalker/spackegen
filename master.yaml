@@ -1,0 +1,109 @@
+specs:
+  - openpmd-api
+  - slate
+  - magma
+  - stc
+
+  # XSDK
+  - py-libensemble^python@3.7.3
+  - flecsi+cinch
+  - hypre
+  - mfem
+  - trilinos@12.14.1+dtk+intrepid2+shards
+  - sundials
+  - petsc
+  - strumpack
+  - superlu-dist
+  - superlu
+  - tasmanian
+  - openblas threads=openmp #Not an E4S package. Required for some test cases
+
+  # DATA MANAGEMENT, IO, CHECKPOINT RESTART
+  - faodel
+  - mercury
+  - hdf5
+  - adios2
+  - adios
+  - darshan-runtime
+  - darshan-util
+  - veloc
+  - scr
+  - parallel-netcdf
+  - unifyfs
+
+  # PMR CORE
+  - qthreads
+  - papyrus@develop
+  - bolt
+  - raja
+  - upcxx
+  - aml
+  - kokkos+openmp
+  - openmpi
+  - umpire
+  - libquo
+  - globalarrays
+  - turbine #Provies swift/t runtime
+
+  # TOOLS AND TECHNOLOGY
+  - pdt  
+ #- py-ytopt^python@3.7.3 #provides surf
+  - tau@2.29 ^binutils@:2.33.1
+  - hpctoolkit
+  - dyninst
+  - gotcha
+  - caliper
+  - papi
+  - py-jupyterhub #^python@3.7.3 #Specifying python3 may be necessary if build fails
+
+  # VIS + REDUCTION
+ #- catalyst
+  - zfp
+  - sz
+ #- paraview+mpi+qt ^llvm~all_targets~clang~compiler-rt~internal_unwind~libcxx+link_dylib~lld~lldb~omp_tsan~polly~python ^mesa ^qt@5.10.0
+
+  # COMPILERS + SUPPORT
+ #- llvm-openmp
+ #- nrm^python@3.7.3 # ***Ecosystem*** -- package needs updating, no py-tornado@5.1.1
+  - libnrm
+ #- geopm^py-numpy@1.16.5^py-pandas@0.24.2 #NO-ppc64le intel?
+  - mpifileutils@develop~xattr
+  - rempi
+  - ninja
+  - kokkos-kernels
+
+specs-exclude:
+  ppc64le:
+    - magma
+    - slate
+    - stc
+
+packages:
+  all:
+    all:
+      compiler: [gcc@7.3.0]
+      variants: +mpi
+      providers:
+        mpi: [mpich]
+        blas: [openblas]
+    gcc:
+      version: [7.3.0]
+      variants: +strip
+    mpich:
+      version: [3.2.1]
+      variants: ~wrapperrpath
+    openblas:
+      variants: threads=openmp
+    pcre:
+      variants: +jit+multibyte+utf
+    llvm:
+      variants: ~all_targets~clang~compiler-rt~lld~lldb
+    binutils:
+      version: [2.33.1]
+      variants: +gold+headers+libiberty~nls
+    hdf5:
+      version: [1.10.6]
+    adios2:
+      variants: ~sz
+    faodel:
+      variants: ~tcmalloc
