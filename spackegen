@@ -24,7 +24,7 @@ opsys, arch, compiler = sys.argv[1], sys.argv[2], sys.argv[3]
 dd = yaml.safe_load(open("master.yaml"))
 
 of = open('spack.yaml','w')
-nfdd = {"spack":{}}
+nfdd = {"spack":dd["spack"]}
 spack = nfdd["spack"]
 
 # specs
@@ -33,15 +33,7 @@ spack['definitions'] = [
     {"e4s": specs},
     {"arch": ["{compiler} arch=linux-{opsys}-{arch}".format(compiler=compiler, opsys=opsys, arch=arch)]}
 ]
-#spack['specs'] = ["{s} {compiler} arch=linux-{opsys}-{arch}"
-#    .format(s=s, compiler=compiler, opsys=opsys, arch=arch) for s in specs]
 spack['specs'] = [{"matrix": [['$e4s'],['$arch']]}]
-
-for k, v in dd["other"].items():
-    spack[k] = v
-
-# package preferences
-spack['packages'] = dd['packages']['all']
 
 yaml.dump({"spack":spack}, of, default_flow_style=False)
 of.close()
