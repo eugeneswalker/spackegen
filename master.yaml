@@ -109,3 +109,10 @@ packages:
       variants: ~sz
     faodel:
       variants: ~tcmalloc
+
+other:
+  view: false
+  concretization: separately
+  config:
+    install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
+    build_jobs: 8

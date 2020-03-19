@@ -37,6 +37,9 @@ spack['definitions'] = [
 #    .format(s=s, compiler=compiler, opsys=opsys, arch=arch) for s in specs]
 spack['specs'] = [{"matrix": [['$e4s'],['$arch']]}]
 
+for k, v in dd["other"].items():
+    spack[k] = v
+
 # package preferences
 spack['packages'] = dd['packages']['all']
 
