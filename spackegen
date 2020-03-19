@@ -19,15 +19,18 @@ if len(sys.argv) < 4:
     print_usage()
     sys.exit(1)
 
+# read in target operating system, architecture, and compiler from cli args
 opsys, arch, compiler = sys.argv[1], sys.argv[2], sys.argv[3]
 
+# load the spack environment master template
 dd = yaml.safe_load(open("master.yaml"))
-
-of = open('spack.yaml','w')
 nfdd = {"spack":dd["spack"]}
 spack = nfdd["spack"]
 
-# specs
+# create a spack.yaml to store the final, derivative spack environment
+of = open('spack.yaml','w')
+
+# add specs
 specs = dif(dd['specs'], t(dd['specs-exclude']))
 spack['definitions'] = [
     {"e4s": specs},
@@ -35,5 +38,6 @@ spack['definitions'] = [
 ]
 spack['specs'] = [{"matrix": [['$e4s'],['$arch']]}]
 
+# save dynamically generated spack environment
 yaml.dump({"spack":spack}, of, default_flow_style=False)
 of.close()
