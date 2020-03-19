@@ -29,8 +29,13 @@ spack = nfdd["spack"]
 
 # specs
 specs = dif(dd['specs'], t(dd['specs-exclude']))
-spack['specs'] = ["{s} {compiler} arch=linux-{opsys}-{arch}"
-    .format(s=s, compiler=compiler, opsys=opsys, arch=arch) for s in specs]
+spack['definitions'] = [
+    {"e4s": specs},
+    {"arch": ["{compiler} arch=linux-{opsys}-{arch}".format(compiler=compiler, opsys=opsys, arch=arch)]}
+]
+#spack['specs'] = ["{s} {compiler} arch=linux-{opsys}-{arch}"
+#    .format(s=s, compiler=compiler, opsys=opsys, arch=arch) for s in specs]
+spack['specs'] = [{"matrix": [['$e4s'],['$arch']]}]
 
 # package preferences
 spack['packages'] = dd['packages']['all']
