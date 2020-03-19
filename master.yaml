@@ -16,7 +16,7 @@ specs:
   - superlu-dist
   - superlu
   - tasmanian
-  - openblas threads=openmp #Not an E4S package. Required for some test cases
+  - openblas threads=openmp # not e4s
 
   # DATA MANAGEMENT, IO, CHECKPOINT RESTART
   - faodel
@@ -43,7 +43,7 @@ specs:
   - umpire
   - libquo
   - globalarrays
-  - turbine #Provies swift/t runtime
+  - turbine # provides swift/t runtime
 
   # TOOLS AND TECHNOLOGY
   - pdt  
@@ -54,7 +54,7 @@ specs:
   - gotcha
   - caliper
   - papi
-  - py-jupyterhub #^python@3.7.3 #Specifying python3 may be necessary if build fails
+  - py-jupyterhub
 
   # VIS + REDUCTION
  #- catalyst
@@ -64,9 +64,11 @@ specs:
 
   # COMPILERS + SUPPORT
  #- llvm-openmp
- #- nrm^python@3.7.3 # ***Ecosystem*** -- package needs updating, no py-tornado@5.1.1
+ #- nrm^python@3.7.3
+ 
+ # Ecosystem
   - libnrm
- #- geopm^py-numpy@1.16.5^py-pandas@0.24.2 #NO-ppc64le intel?
+ #- geopm^py-numpy@1.16.5^py-pandas@0.24.2
   - mpifileutils@develop~xattr
   - rempi
   - ninja
