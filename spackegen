@@ -21,7 +21,7 @@ if len(sys.argv) < 4:
 
 opsys, arch, compiler = sys.argv[1], sys.argv[2], sys.argv[3]
 
-dd = yaml.safe_load(open("master-manifest.yaml"))
+dd = yaml.safe_load(open("master.yaml"))
 
 of = open('new-spack.yaml','w')
 nfdd = {"spack":{}}
