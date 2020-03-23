@@ -95,6 +95,8 @@ spack:
     mpich:
       version: [3.2.1]
       variants: ~wrapperrpath
+    patchelf:
+      version: [0.9]
     boost:
       version: [1.72]
     openblas:
@@ -175,7 +177,6 @@ spack:
     elfutils:
       version: [0.178]
       variants: +bzip2+nls+xz
-    
 
   view: false
   concretization: separately

@@ -34,7 +34,7 @@ of = open('spack.yaml','w')
 specs = dif(dd['specs'], t(dd['specs-exclude']))
 spack['definitions'] = [
     {"e4s": specs},
-    {"arch": ["{compiler} arch=linux-{opsys}-{arch}".format(compiler=compiler, opsys=opsys, arch=arch)]}
+    {"arch": ["%{compiler} arch=linux-{opsys}-{arch}".format(compiler=compiler, opsys=opsys, arch=arch)]}
 ]
 spack['specs'] = [{"matrix": [['$e4s'],['$arch']]}]
 
