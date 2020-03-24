@@ -1,93 +1,113 @@
-specs:
-  # MISC
-  - openpmd-api
-  - slate
-  - magma
-  - stc
-
-  # XSDK
-  - py-libensemble^python@3.7.3
-  - flecsi+cinch
-  - hypre
-  - mfem
-  - trilinos@12.14.1+dtk+intrepid2+shards
-  - sundials
-  - petsc
-  - strumpack
-  - superlu-dist
-  - superlu
-  - tasmanian
-  - openblas threads=openmp # not e4s
-
-  # DATA MANAGEMENT, IO, CHECKPOINT RESTART
-  - faodel
-  - mercury
-  - hdf5
-  - adios2
-  - adios
-  - darshan-runtime
-  - darshan-util
-  - veloc
-  - scr
-  - parallel-netcdf
-  - unifyfs
-
-  # PMR CORE
-  - qthreads
-  - papyrus@develop
-  - bolt
-  - raja
-  - upcxx
-  - aml
-  - kokkos+openmp
-  - openmpi
-  - umpire
-  - libquo
-  - globalarrays
-  - turbine # provides swift/t runtime
-
-  # TOOLS AND TECHNOLOGY
-  - pdt  
- #- py-ytopt^python@3.7.3 #provides surf
-  - tau@2.29 ^binutils@:2.33.1
-  - hpctoolkit
-  - dyninst
-  - gotcha
-  - caliper
-  - papi
-  - py-jupyterhub
-
-  # VIS + REDUCTION
- #- catalyst
-  - zfp
-  - sz
- #- paraview+mpi+qt ^llvm~all_targets~clang~compiler-rt~internal_unwind~libcxx+link_dylib~lld~lldb~omp_tsan~polly~python ^mesa ^qt@5.10.0
-
-  # COMPILERS + SUPPORT
- #- llvm-openmp
- #- nrm^python@3.7.3
- 
- # Ecosystem
-  - libnrm
- #- geopm^py-numpy@1.16.5^py-pandas@0.24.2
-  - mpifileutils@develop~xattr
-  - rempi
-  - ninja
-  - kokkos-kernels
-
-specs-exclude:
-  ppc64le:
+ppc64le-exclude:
+  specs:
     - magma
     - slate
     - stc
 
-spack:
+ascent-overwrite:
   packages:
     all:
+      providers: []
+      providers:
+        mpi:
+        - spectrum-mpi@10.3.0.0
+    cuda:
+      buildable: false
+      version: [10.1.105]
+      modules:
+        cuda@10.1.105: cuda/10.1.105
+    spectrum-mpi:
+      buildable: false
+      version: [10.3.0.0]
+      modules:
+        spectrum-mpi@10.3.0.0: spectrum-mpi/10.3.0.0-20190410
+
+spack:
+  specs:
+    # MISC
+    - openpmd-api
+    - slate
+    - magma
+    - stc
+
+    # XSDK
+    - py-libensemble^python@3.7.3
+    - flecsi+cinch
+    - hypre
+    - mfem
+    - trilinos@12.14.1+dtk+intrepid2+shards
+    - sundials
+    - petsc
+    - strumpack
+    - superlu-dist
+    - superlu
+    - tasmanian
+
+    # DATA MANAGEMENT, IO, CHECKPOINT RESTART
+    - faodel
+    - mercury
+    - hdf5
+    - adios2
+    - adios
+    - darshan-runtime
+    - darshan-util
+    - veloc
+    - scr
+    - parallel-netcdf
+    - unifyfs
+
+    # PMR CORE
+    - qthreads
+    - papyrus@develop
+    - bolt
+    - raja
+    - upcxx
+    - aml
+    - kokkos+openmp
+    - openmpi
+    - umpire
+    - libquo
+    - globalarrays
+    - turbine # provides swift/t runtime
+
+    # TOOLS AND TECHNOLOGY
+    - pdt  
+  #- py-ytopt^python@3.7.3 #provides surf
+    - tau
+    - hpctoolkit
+    - dyninst
+    - gotcha
+    - caliper
+    - papi
+    - py-jupyterhub
+
+    # VIS + REDUCTION
+  #- catalyst
+    - zfp
+    - sz
+  #- paraview+mpi+qt ^llvm~all_targets~clang~compiler-rt~internal_unwind~libcxx+link_dylib~lld~lldb~omp_tsan~polly~python ^mesa ^qt@5.10.0
+
+    # COMPILERS + SUPPORT
+  #- llvm-openmp
+  #- nrm^python@3.7.3
+  
+  # Ecosystem
+    - libnrm
+  #- geopm^py-numpy@1.16.5^py-pandas@0.24.2
+    - mpifileutils@develop~xattr
+    - rempi
+    - ninja
+    - kokkos-kernels
+
+  packages:
+    all:
+      compiler: []
       variants: +mpi
       providers:
         mpi: [mpich]
         blas: [openblas]
+    gcc:
+      variants: +strip
     mpich:
       version: [3.2.1]
       variants: ~wrapperrpath
