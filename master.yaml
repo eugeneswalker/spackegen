@@ -84,14 +84,10 @@ specs-exclude:
 spack:
   packages:
     all:
-      compiler: [gcc@7.3.0]
       variants: +mpi
       providers:
         mpi: [mpich]
         blas: [openblas]
-    gcc:
-      version: [7.3.0]
-      variants: +strip
     mpich:
       version: [3.2.1]
       variants: ~wrapperrpath
