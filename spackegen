@@ -85,37 +85,25 @@ for k in yaml_template.keys():
 
 # perform the actions required to create the desired spack environment
 for (op, kpath, v) in actions:
-    if op == "overwrite":
-        kpath = kpath[1:]
-        o = spack
-        while len(kpath) > 0:
-            if len(kpath) == 1:
-                x = kpath.pop(0)
+    kpath = kpath[1:]
+    o = spack
+    while len(kpath) > 0:
+        if len(kpath) == 1:
+            x = kpath.pop(0)
+            if op == "overwrite":
                 o[x] = v
-            else:
-                x = kpath.pop(0)
-                if x in o:
-                    o = o[x]
-                else:
-                    o[x] = {}
-                    o = o[x]
+            elif op == "exclude":
+                o[x] = [z for z in o[x] if z not in v]
 
-    elif op == "exclude":
-        ik = kpath.copy()
-        ix = getitem(yaml_template, ik)
-
-        kpath = kpath[1:]
-        o = spack
-        while len(kpath) > 0:
-            if len(kpath) == 1:
-                x = kpath.pop(0)
-                o[x] = [z for z in o[x] if z not in ix]
+        else:
+            x = kpath.pop(0)
+            if x in o:
+                o = o[x]
+            elif op == "overwrite":
+                o[x] = {}
+                o = o[x]
             else:
-                x = kpath.pop(0)
-                if x in o:
-                    o = o[x]
-                else:
-                    break
+                break
 
 # move templated spack:specs into an E4S spec definition block, along with a seperate definition for the target arch spec
 spack['definitions'] = [
