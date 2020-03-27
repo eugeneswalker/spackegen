@@ -1,4 +1,4 @@
-### Basic Usage
+#### Basic Usage
 
 ```
 $> chmod +x spackegen
@@ -6,8 +6,6 @@ $> chmod +x spackegen
 $> ./spackegen
 Usage: ./spackegen <os> <arch> <compiler> [<tag>]
 ```
-
-### Generating E4S Spack environments
 
 #### Ubuntu 18.04, ppc64le, GCC 7.3.0
 ```
