@@ -12,7 +12,7 @@ target_os, target_arch, target_compiler = sys.argv[1], sys.argv[2], sys.argv[3]
 target_tag = sys.argv[4] if len(sys.argv) == 5 else None
 
 # load the spack environment template
-yaml_template = yaml.safe_load(open("spack.yaml.template"))
+yaml_template = yaml.safe_load(open("spack-template.yaml"))
 spack = yaml_template["spack"]
 
 def getitem(d, kpath):
