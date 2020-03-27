@@ -7,7 +7,6 @@ ppc64le-exclude:
 ascent-overwrite:
   packages:
     all:
-      providers: []
       providers:
         mpi:
         - spectrum-mpi@10.3.0.0
@@ -101,7 +100,6 @@ spack:
 
   packages:
     all:
-      compiler: []
       variants: +mpi
       providers:
         mpi: [mpich]
