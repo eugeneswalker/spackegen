@@ -20,6 +20,9 @@ ascent-overwrite:
       version: [10.3.0.0]
       modules:
         spectrum-mpi@10.3.0.0: spectrum-mpi/10.3.0.0-20190410
+  config:
+    build_jobs: 3
+    install_tree: $spack/super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
 
 spack:
   specs:
