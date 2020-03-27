@@ -2,87 +2,58 @@
 
 import yaml
 import sys
-import json
-
-target_os = None
-target_arch = None
-target_compiler = None
-target_tag = None
-
-def getitem(a, b):
-    b = b.split('/') if not isinstance(b, list) else b
-    while len(b) > 0:
-        x = b.pop(0)
-        if x in a:
-            a = a[x]
-        else:
-            return None
-    return a
-
-def t(d):
-    for k,v in dd.items():
-        ss = k.split('-')
-        if len(ss) != 2 or ss[0] != target_arch or ss[1] != "exclude":
-            continue
-        print("processing: {}".format(k))
-        return dd[k]['specs']
-    return []
-    
-def dif(a,b):
-    return [x for x in a if x not in b]
 
 if len(sys.argv) < 4:
     print("Usage: {} <os> <arch> <compiler> [<tag>]".format(sys.argv[0]))
     sys.exit(1)
 
-# read in target operating system, architecture, and compiler as CLI args
+# read target OS, architecture, compiler, and optional tag from CLI args
 target_os, target_arch, target_compiler = sys.argv[1], sys.argv[2], sys.argv[3]
 target_tag = sys.argv[4] if len(sys.argv) == 5 else None
 
-# load the spack environment master template
-dd = yaml.safe_load(open("spack.yaml.template"))
-nfdd = {"spack": dd["spack"]}
-spack = nfdd["spack"]
-specs = spack['specs']
+# load the spack environment template
+yaml_template = yaml.safe_load(open("spack.yaml.template"))
+spack = yaml_template["spack"]
 
-def getitem(a,b):
-    ss = b.split("/") if not isinstance(b, list) else b
-    o = a
-    while len(ss) > 0:
-        x = ss.pop(0)
-        if x in o.keys():
-            o = o[x]
+def getitem(d, kpath):
+    kpath = kpath.split("/") if not isinstance(kpath, list) else kpath
+    while len(kpath) > 0:
+        k = kpath.pop(0)
+        if k in d.keys():
+            d = d[k]
             continue
         return None
-    return o
+    return d
 
-f = []
-for k in dd.keys():
+# determine which actions are required to create the desired spack environment
+actions = []
+for k in yaml_template.keys():
     if k == "spack":
         continue
 
     ss = k.split('-')
 
     if len(ss) != 2:
-        sys.exit(1)
+        print("error: invalid format: ignoring {}".format(k))
+        continue
     
     tag, op = ss[0], ss[1]
 
     if op not in ("exclude", "overwrite"):
-        continue # only handle exclude operations atm
+        continue # only handle exclude or overwrite
 
     if tag not in (target_arch, target_tag):
+        continue # only match on target_arch and target_tag
+
+    if not isinstance(yaml_template[k], dict):
         continue
 
-    if not isinstance(dd[k], dict):
-        print("not a dict, skipping...")
-        continue
-
-    s = ["{}/{}".format(k, d) for d in dd[k].keys()]
+    s = ["{}/{}".format(k, d) for d in yaml_template[k].keys()]
 
     while len(s) > 0:
         d = s.pop()
-        i = getitem(dd, d)
+        kpath = d.split("/")
+        i = getitem(yaml_template, d)
 
         if isinstance(i, dict):
             s += ["{}/{}".format(d,k) for k in i.keys()]
@@ -90,7 +61,7 @@ for k in dd.keys():
         
         if isinstance(i, list):
             if op == "overwrite":
-                f.append((op, d.split("/"), i))
+                actions.append((op, kpath, i))
                 continue
 
             if len(i) <= 0:
@@ -107,55 +78,54 @@ for k in dd.keys():
         else:
             # non-list, non-dict
             if op == "overwrite":
-                f.append((op, d.split("/"), i))
+                actions.append((op, kpath, i))
             continue
         
-        f.append((op, d.split("/"), i))
+        actions.append((op, kpath, i))
 
-for (op,k,v) in f:
+# perform the actions required to create the desired spack environment
+for (op, kpath, v) in actions:
     if op == "overwrite":
-        k = k[1:]
+        kpath = kpath[1:]
         o = spack
-        while len(k) > 0:
-            if len(k) == 1:
-                x = k.pop(0)
+        while len(kpath) > 0:
+            if len(kpath) == 1:
+                x = kpath.pop(0)
                 o[x] = v
             else:
-                x = k.pop(0)
+                x = kpath.pop(0)
                 if x in o:
                     o = o[x]
-                    #print("found existing subkey {}".format(x))
                 else:
-                    #print("creating subkey {}".format(x))
                     o[x] = {}
                     o = o[x]
 
     elif op == "exclude":
-        ik = k.copy()
-        ix = getitem(dd, ik)
+        ik = kpath.copy()
+        ix = getitem(yaml_template, ik)
 
-        k = k[1:]
+        kpath = kpath[1:]
         o = spack
-        while len(k) > 0:
-            if len(k) == 1:
-                x = k.pop(0)
+        while len(kpath) > 0:
+            if len(kpath) == 1:
+                x = kpath.pop(0)
                 o[x] = [z for z in o[x] if z not in ix]
             else:
-                x = k.pop(0)
+                x = kpath.pop(0)
                 if x in o:
                     o = o[x]
                 else:
                     break
 
-# add specs
-specs = spack['specs']
+# move templated spack:specs into an E4S spec definition block, along with a seperate definition for the target arch spec
 spack['definitions'] = [
-    {"e4s": specs},
-    {"arch": ["%{compiler} arch=linux-{os}-{arch}".format(compiler=target_compiler, os=target_os, arch=target_arch)]}
+    { "e4s": spack['specs'] },
+    { "arch": ["%{compiler} arch=linux-{os}-{arch}".format(compiler=target_compiler, os=target_os, arch=target_arch)] }
 ]
-spack['specs'] = [{"matrix": [['$e4s'],['$arch']]}]
 
-# create a spack.yaml to store the final, derivative spack environment
-# save dynamically generated spack environment
-with open('spack.yaml','w') as of:
-    yaml.dump({"spack":spack}, of, default_flow_style=False)
+# set spack:specs to be the matrix of (e4s specs x target arch spec)
+spack['specs'] = [ {"matrix": [ ['$e4s'], ['$arch'] ] } ]
+
+# save the newly generated spack environment
+with open('spack.yaml', 'w') as fs:
+    yaml.dump({"spack": spack}, fs, default_flow_style=False)
