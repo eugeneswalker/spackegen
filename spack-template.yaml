@@ -4,6 +4,18 @@ ppc64le-exclude:
     - slate
     - stc
 
+llvm-overwrite:
+  packages:
+    all:
+      compiler: [clang@9.0.1]
+    clang:
+      version: [9.0.1]
+
+bc-overwrite:
+  config:
+    install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
+    build_jobs: 8
+
 ascent-overwrite:
   packages:
     all:
@@ -197,6 +209,3 @@ spack:
 
   view: false
   concretization: separately
-  config:
-    install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
-    build_jobs: 8
