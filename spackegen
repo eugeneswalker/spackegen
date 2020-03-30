@@ -106,13 +106,18 @@ for (op, kpath, v) in actions:
                 break
 
 # move templated spack:specs into an E4S spec definition block, along with a seperate definition for the target arch spec
-spack['definitions'] = [
-    { "e4s": spack['specs'] },
-    { "arch": ["%{compiler} arch=linux-{os}-{arch}".format(compiler=target_compiler, os=target_os, arch=target_arch)] }
-]
+#spack['definitions'] = [
+#    { "e4s": spack['specs'] },
+#    { "arch": ["%{compiler} arch=linux-{os}-{arch}".format(compiler=target_compiler, os=target_os, arch=target_arch)] }
+#]
+
+#spack['specs'] = [
+#    "{} %{compiler} arch=linux-{os}-{arch}".format(x, compiler=target_compiler, os=target_os, arch=target_arch)
+#    for x in spack['specs']
+#]
 
 # set spack:specs to be the matrix of (e4s specs x target arch spec)
-spack['specs'] = [ {"matrix": [ ['$e4s'], ['$arch'] ] } ]
+#spack['specs'] = [ {"matrix": [ ['$e4s'], ['$arch'] ] } ]
 
 # save the newly generated spack environment
 with open('spack.yaml', 'w') as fs:
