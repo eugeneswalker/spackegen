@@ -3,17 +3,30 @@
 import yaml
 import sys
 
-if len(sys.argv) < 4:
+def print_usage():
     print("Usage: {} <os> <arch> <compiler> [<tag>]".format(sys.argv[0]))
+
+if len(sys.argv) not in [4,5]:
+    print_usage()
     sys.exit(1)
 
-# read target OS, architecture, compiler, and optional tag from CLI args
+# read target OS, architecture, compiler, and tags from CLI
 target_os, target_arch, target_compiler = sys.argv[1], sys.argv[2], sys.argv[3]
-target_tag = sys.argv[4] if len(sys.argv) == 5 else None
+target_tags = [target_os, target_arch]
+target_tags += sys.argv[4].split(',') if len(sys.argv) == 5 else []
+target_tags = list(set(target_tags))
 
 # load the spack environment template
-yaml_template = yaml.safe_load(open("spack-template.yaml"))
-spack = yaml_template["spack"]
+TEMPLATE_FILE = "spack-template.yaml"
+template = yaml.safe_load(open(TEMPLATE_FILE))
+
+valid_tags = list(set(template['tags'] + [target_os, target_arch]))
+for t in target_tags:
+    if t not in valid_tags:
+        print("error: tag not defined: {}".format(t))
+        sys.exit(1)
+
+spack = template["spack"]
 
 def getitem(d, kpath):
     kpath = kpath.split("/") if not isinstance(kpath, list) else kpath
@@ -27,71 +40,75 @@ def getitem(d, kpath):
 
 # determine which actions are required to create the desired spack environment
 actions = []
-for k in yaml_template.keys():
-    if k == "spack":
-        continue
-
-    ss = k.split('-')
-
-    if len(ss) != 2:
-        print("error: invalid format: ignoring {}".format(k))
+for k in target_tags:
+    if k not in template.keys():
         continue
     
-    tag, op = ss[0], ss[1]
+    dd = template[k]
+    if not isinstance(dd, dict):
+        print("error: tag specification {} must be a dict in {}".format(k, TEMPLATE_FILE))
+        sys.exit(1)
 
-    if op not in ("exclude", "overwrite"):
-        continue # only handle exclude or overwrite
+    ops = []
+    ops += ["exclude"] if "exclude" in dd.keys() else []
+    ops += ["overwrite"] if "overwrite" in dd.keys() else []
 
-    if tag not in (target_arch, target_tag):
-        continue # only match on target_arch and target_tag
+    if len(ops) <= 0:
+        print("error: tag {} has no valid rules in {}".format(k, TEMPLATE_FILE))
+        sys.exit(1)
 
-    if not isinstance(yaml_template[k], dict):
-        continue
+    for op in ops:
+        ddop = dd[op]
 
-    s = ["{}/{}".format(k, d) for d in yaml_template[k].keys()]
+        s = [d for d in ddop.keys()]
 
-    while len(s) > 0:
-        d = s.pop()
-        kpath = d.split("/")
-        i = getitem(yaml_template, d)
+        while len(s) > 0:
+            d = s.pop()
+            kpath = d.split("/")
+            i = getitem(ddop, d)
 
-        if isinstance(i, dict):
-            s += ["{}/{}".format(d,k) for k in i.keys()]
-            continue
-        
-        if isinstance(i, list):
-            if op == "overwrite":
-                actions.append((op, kpath, i))
+            if isinstance(i, dict):
+                s += ["{}/{}".format(d,k) for k in i.keys()]
                 continue
+            
+            if isinstance(i, list):
+                if op == "overwrite":
+                    actions.append((op, kpath, i))
+                    continue
 
-            if len(i) <= 0:
-                # not handling empty list (nothing to exclude)
-                continue
+                if len(i) <= 0:
+                    # not handling empty list (nothing to exclude)
+                    continue
 
-            if isinstance(i[0], list):
-                # not handling list-of-lists
-                continue
+                if isinstance(i[0], list):
+                    # not handling list-of-lists
+                    continue
 
-            if isinstance(i[0], dict):
-                # not handling list-of-dicts
+                if isinstance(i[0], dict):
+                    # not handling list-of-dicts
+                    continue
+            else:
+                # non-list, non-dict
+                if op == "overwrite":
+                    actions.append((op, kpath, i))
                 continue
-        else:
-            # non-list, non-dict
-            if op == "overwrite":
-                actions.append((op, kpath, i))
-            continue
-        
-        actions.append((op, kpath, i))
+            
+            actions.append((op, kpath, i))
+
 
 # perform the actions required to create the desired spack environment
 for (op, kpath, v) in actions:
-    kpath = kpath[1:]
     o = spack
     while len(kpath) > 0:
         if len(kpath) == 1:
             x = kpath.pop(0)
             if op == "overwrite":
-                o[x] = v
+                if isinstance(v, list) and x in o:
+                    print("addition to list: {}".format(v))
+                    o[x] += v
+                else:
+                    print("complete overwrite: {}".format(v))
+                    o[x] = v
             elif op == "exclude":
                 o[x] = [z for z in o[x] if z not in v]
 
@@ -106,10 +123,10 @@ for (op, kpath, v) in actions:
                 break
 
 # move templated spack:specs into an E4S spec definition block, along with a seperate definition for the target arch spec
-#spack['definitions'] = [
-#    { "e4s": spack['specs'] },
-#    { "arch": ["%{compiler} arch=linux-{os}-{arch}".format(compiler=target_compiler, os=target_os, arch=target_arch)] }
-#]
+spack['definitions'] = [
+    { "e4s": spack['specs'] },
+    { "arch": ["%{compiler} arch=linux-{os}-{arch}".format(compiler=target_compiler, os=target_os, arch=target_arch)] }
+]
 
 #spack['specs'] = [
 #    "{} %{compiler} arch=linux-{os}-{arch}".format(x, compiler=target_compiler, os=target_os, arch=target_arch)
@@ -117,7 +134,7 @@ for (op, kpath, v) in actions:
 #]
 
 # set spack:specs to be the matrix of (e4s specs x target arch spec)
-#spack['specs'] = [ {"matrix": [ ['$e4s'], ['$arch'] ] } ]
+spack['specs'] = [ {"matrix": [ ['$e4s'], ['$arch'] ] } ]
 
 # save the newly generated spack environment
 with open('spack.yaml', 'w') as fs:

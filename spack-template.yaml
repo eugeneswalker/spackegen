@@ -1,40 +1,56 @@
-ppc64le-exclude:
-  specs:
-    - magma
-    - slate
-    - stc
+tags:
+- llvm
+- pipeline
+- ascent
 
-llvm-overwrite:
-  packages:
-    all:
-      compiler: [clang@9.0.1]
-    clang:
-      version: [9.0.1]
+ppc64le:
+  exclude:
+    specs:
+      - magma
+      - slate
+      - stc
 
-bc-overwrite:
-  config:
-    install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
-    build_jobs: 8
+llvm:
+  exclude:
+    specs:
+    - hpctoolkit
+    - dyninst
+  overwrite:
+    specs:
+    - hpctoolkit ^elfutils%gcc@7.3.0
+    - dyninst ^elfutils%gcc@7.3.0
+    packages:
+      all:
+        compiler: [clang@9.0.1]
+      clang:
+        version: [9.0.1]
 
-ascent-overwrite:
-  packages:
-    all:
-      providers:
-        mpi:
-        - spectrum-mpi@10.3.0.0
-    cuda:
-      buildable: false
-      version: [10.1.105]
-      modules:
-        cuda@10.1.105: cuda/10.1.105
-    spectrum-mpi:
-      buildable: false
-      version: [10.3.0.0]
-      modules:
-        spectrum-mpi@10.3.0.0: spectrum-mpi/10.3.0.0-20190410
-  config:
-    build_jobs: 3
-    install_tree: $spack/super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
+pipeline:
+  overwrite:
+    config:
+      install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
+      build_jobs: 8
+
+ascent:
+  overwrite:
+    packages:
+      all:
+        providers:
+          mpi:
+          - spectrum-mpi@10.3.0.0
+      cuda:
+        buildable: false
+        version: [10.1.105]
+        modules:
+          cuda@10.1.105: cuda/10.1.105
+      spectrum-mpi:
+        buildable: false
+        version: [10.3.0.0]
+        modules:
+          spectrum-mpi@10.3.0.0: spectrum-mpi/10.3.0.0-20190410
+    config:
+      build_jobs: 3
+      install_tree: $spack/super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
 
 spack:
   specs:
