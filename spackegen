@@ -104,10 +104,10 @@ for (op, kpath, v) in actions:
             x = kpath.pop(0)
             if op == "overwrite":
                 if isinstance(v, list) and x in o:
-                    print("addition to list: {}".format(v))
+                    #print("addition to list: {}".format(v))
                     o[x] += v
                 else:
-                    print("complete overwrite: {}".format(v))
+                    #print("complete overwrite: {}".format(v))
                     o[x] = v
             elif op == "exclude":
                 o[x] = [z for z in o[x] if z not in v]
