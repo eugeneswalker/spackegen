@@ -2,6 +2,13 @@ tags:
 - llvm
 - pipeline
 - ascent
+- nocuda
+
+nocuda:
+  exclude:
+    specs:
+      - magma
+      - slate
 
 ppc64le:
   exclude:
