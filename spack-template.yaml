@@ -158,7 +158,7 @@ spack:
     - mfem
     - trilinos@12.14.1+dtk+intrepid2+shards
     - sundials
-    - petsc ^hdf5+hl+fortran
+    - petsc
     - strumpack
     - superlu-dist
     - superlu
