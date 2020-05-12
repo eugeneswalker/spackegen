@@ -14,9 +14,13 @@ nocuda:
 ppc64le:
   exclude:
     specs:
-      - magma
-      - slate
-      - stc
+    - magma
+    - slate
+    - stc
+    - faodel
+  overwrite:
+    specs:
+    - faodel~tcmalloc
 
 llvm:
   exclude:
