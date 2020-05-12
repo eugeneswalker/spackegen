@@ -19,6 +19,9 @@ ppc64le:
     - stc
     - faodel
   overwrite:
+    packages:
+      libffi:
+        version: [3.2.1]
     specs:
     - faodel~tcmalloc
 
