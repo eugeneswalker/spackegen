@@ -152,8 +152,7 @@ ascent:
 
 spack:
   specs:
-    - slate
-    - magma cuda_arch=37
+    - magma cuda_arch=70
 
     # MISC
     - openpmd-api
