@@ -135,17 +135,17 @@ ascent:
       all:
         providers:
           mpi:
-          - spectrum-mpi@10.3.0.0
+          - spectrum-mpi@10.3.1.2
       cuda:
         buildable: false
-        version: [10.1.105]
+        version: [cuda/10.1.243]
         modules:
-          cuda@10.1.105: cuda/10.1.105
+          cuda@10.1.105: cuda/10.1.243
       spectrum-mpi:
         buildable: false
-        version: [10.3.0.0]
+        version: [10.3.1.2]
         modules:
-          spectrum-mpi@10.3.0.0: spectrum-mpi/10.3.0.0-20190410
+          spectrum-mpi@10.3.1.2: spectrum-mpi/10.3.1.2-20200121
     config:
       build_jobs: 3
       install_tree: $spack/super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
