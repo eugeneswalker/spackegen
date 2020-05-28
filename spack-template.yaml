@@ -146,6 +146,7 @@ ascent:
         modules:
           spectrum-mpi@10.3.1.2: spectrum-mpi/10.3.1.2-20200121
     config:
+      misc_cache: $spack/cache
       build_jobs: 3
       install_tree: $spack/super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
 
