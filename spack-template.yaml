@@ -167,7 +167,7 @@ spack:
     - mfem
     - trilinos@12.14.1+dtk+intrepid2+shards
     - sundials
-    - petsc
+    - petsc ^superlu-dist@6.3.0
     - strumpack
     - superlu-dist
     - superlu
