@@ -8,7 +8,7 @@ tags:
 nocuda:
   exclude:
     specs:
-      - magma
+      - magma cuda_arch=70
       - slate
 
 ppc64le:
