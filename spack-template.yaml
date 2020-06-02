@@ -242,6 +242,8 @@ spack:
     binutils:
       version: [2.33.1]
       variants: +gold+headers+libiberty~nls
+    py-ipython:
+      version: [7.3.0]
 
   view: false
   concretization: separately
