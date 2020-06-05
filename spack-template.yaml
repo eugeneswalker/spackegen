@@ -4,67 +4,6 @@ tags:
 - ascent
 - nocuda
 
-nocuda:
-  exclude:
-    specs:
-      - magma cuda_arch=70
-      - slate
-
-ppc64le:
-  exclude:
-    specs:
-    - slate
-    - stc
-    - faodel
-  overwrite:
-    packages:
-      libffi:
-        version: [3.2.1]
-    specs:
-    - faodel~tcmalloc
-
-llvm:
-  exclude:
-    specs:
-    - hpctoolkit
-    - dyninst
-  overwrite:
-    specs:
-    - hpctoolkit ^elfutils%gcc@7.3.0
-    - dyninst ^elfutils%gcc@7.3.0
-    packages:
-      all:
-        compiler: [clang@9.0.1]
-      clang:
-        version: [9.0.1]
-
-pipeline:
-  overwrite:
-    config:
-      install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
-      build_jobs: 8
-
-ascent:
-  overwrite:
-    packages:
-      all:
-        providers:
-          mpi:
-          - spectrum-mpi@10.3.1.2
-      cuda:
-        buildable: false
-        version: [cuda/10.1.243]
-        modules:
-          cuda@10.1.105: cuda/10.1.243
-      spectrum-mpi:
-        buildable: false
-        version: [10.3.1.2]
-        modules:
-          spectrum-mpi@10.3.1.2: spectrum-mpi/10.3.1.2-20200121
-    config:
-      misc_cache: $spack/cache
-      install_tree: $spack/$padding:512
-
 spack:
   specs:
     - magma cuda_arch=70
@@ -162,3 +101,64 @@ spack:
 
   view: false
   concretization: separately
+
+nocuda:
+  exclude:
+    specs:
+      - magma cuda_arch=70
+      - slate
+
+ppc64le:
+  exclude:
+    specs:
+    - slate
+    - stc
+    - faodel
+  overwrite:
+    packages:
+      libffi:
+        version: [3.2.1]
+    specs:
+    - faodel~tcmalloc
+
+llvm:
+  exclude:
+    specs:
+    - hpctoolkit
+    - dyninst
+  overwrite:
+    specs:
+    - hpctoolkit ^elfutils%gcc@7.3.0
+    - dyninst ^elfutils%gcc@7.3.0
+    packages:
+      all:
+        compiler: [clang@9.0.1]
+      clang:
+        version: [9.0.1]
+
+pipeline:
+  overwrite:
+    config:
+      install_tree: /super/absurdly/ridiculously/obnoxiously/long/path/for/relocation
+      build_jobs: 8
+
+ascent:
+  overwrite:
+    packages:
+      all:
+        providers:
+          mpi:
+          - spectrum-mpi@10.3.1.2
+      cuda:
+        buildable: false
+        version: [cuda/10.1.243]
+        modules:
+          cuda@10.1.105: cuda/10.1.243
+      spectrum-mpi:
+        buildable: false
+        version: [10.3.1.2]
+        modules:
+          spectrum-mpi@10.3.1.2: spectrum-mpi/10.3.1.2-20200121
+    config:
+      misc_cache: $spack/cache
+      install_tree: $spack/$padding:512
