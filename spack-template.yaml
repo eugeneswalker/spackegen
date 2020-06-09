@@ -149,11 +149,12 @@ ascent:
         providers:
           mpi:
           - spectrum-mpi@10.3.1.2
+        target: [ppc64le]
       cuda:
         buildable: false
         version: [cuda/10.1.243]
         modules:
-          cuda@10.1.105: cuda/10.1.243
+          cuda@10.1.243: cuda/10.1.243
       spectrum-mpi:
         buildable: false
         version: [10.3.1.2]
@@ -161,4 +162,5 @@ ascent:
           spectrum-mpi@10.3.1.2: spectrum-mpi/10.3.1.2-20200121
     config:
       misc_cache: $spack/cache
+      build_Stage: $spack/build-stage
       install_tree: $spack/$padding:512
