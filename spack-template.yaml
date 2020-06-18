@@ -6,6 +6,7 @@ tags:
 
 spack:
   specs:
+    - axom
     - magma cuda_arch=70
 
     # MISC
