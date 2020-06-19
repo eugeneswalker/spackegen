@@ -21,7 +21,7 @@ spack:
     - mfem
     - trilinos 
     - sundials
-    - petsc ^superlu-dist@6.3.0
+    - petsc
     - strumpack
     - superlu-dist
     - superlu
