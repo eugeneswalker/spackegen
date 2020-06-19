@@ -15,7 +15,7 @@ spack:
     - stc
 
     # XSDK
-    - py-libensemble^python@3.7.3
+    - py-libensemble
     - flecsi+cinch
     - hypre
     - mfem
