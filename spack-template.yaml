@@ -42,7 +42,7 @@ spack:
 
     # PMR CORE
     - qthreads
-    - papyrus
+    - papyrus@develop
     - bolt
     - raja
     - upcxx
