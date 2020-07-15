@@ -11,7 +11,7 @@ spack:
 
     # MISC
     - openpmd-api
-    - slate
+    - slate ^cuda@10.2
     - stc
 
     # XSDK
@@ -107,12 +107,12 @@ nocuda:
   exclude:
     specs:
       - magma cuda_arch=70
-      - slate
+      - slate ^cuda@10.2
 
 ppc64le:
   exclude:
     specs:
-    - slate
+    - slate ^cuda@10.2
     - stc
     - faodel
   overwrite:
